@@ -1,0 +1,191 @@
+theia@theiadocker-lgborges12:/home/project$ psql --host 
+172.21.197.76 -p 5432 -U postgres 
+psql (14.19 (Ubuntu 14.19-0ubuntu0.22.04.1), server 13.2)
+Type "help" for help.
+
+postgres=# CREATE DATABASE "Test1";
+CREATE DATABASE
+postgres=# \c Test1;
+psql (14.19 (Ubuntu 14.19-0ubuntu0.22.04.1), server 13.2)
+You are now connected to database "Test1" as user "postgres".
+Test1=# \q
+
+theia@theiadocker-lgborges12:/home/project$ psql --host 172.21.197.76 -p 5432 -U postgres -d Test1 < CREATE-SCRIPT.sql 
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+theia@theiadocker-lgborges12:/home/project$ 
+
+
+Test1=# SELECT * FROM "DimDate" LIMIT 5;
+ dateid |    date    | year | quarter |                    quartername                     | month |                     monthname                      | day | weekday |                    weekdayname                     
+--------+------------+------+---------+----------------------------------------------------+-------+----------------------------------------------------+-----+---------+----------------------------------------------------
+      1 | 2019-01-01 | 2019 |       1 | Q1                                                 |     1 | January                                            |   1 |       3 | Tuesday                                           
+      2 | 2019-01-02 | 2019 |       1 | Q1                                                 |     1 | January                                            |   2 |       4 | Wednesday                                         
+      3 | 2019-01-03 | 2019 |       1 | Q1                                                 |     1 | January                                            |   3 |       5 | Thursday                                          
+      4 | 2019-01-04 | 2019 |       1 | Q1                                                 |     1 | January                                            |   4 |       6 | Friday                                            
+      5 | 2019-01-05 | 2019 |       1 | Q1                                                 |     1 | January                                            |   5 |       7 | Saturday                                          
+(5 rows)
+
+Test1=# SELECT * FROM "DimCategory" LIMIT 5;
+ categoryid |                      category                      
+------------+----------------------------------------------------
+          1 | Electronics                                       
+          2 | Books                                             
+          3 | Toys                                              
+          4 | Sports                                            
+          5 | Software                                          
+(5 rows)
+
+Test1=# SELECT * FROM "DimCountry" LIMIT 5;
+ countryid |                      country                       
+-----------+----------------------------------------------------
+         1 | Argentina                                         
+         2 | Australia                                         
+         3 | Austria                                           
+         4 | Azerbaijan                                        
+         5 | Belgium                                           
+(5 rows)
+
+
+Test1=# SELECT * FROM "FactSales" LIMIT 5;
+ orderid | dateid | countryid | categoryid | amount 
+---------+--------+-----------+------------+--------
+       1 |      1 |         6 |          4 |   5190
+       2 |      1 |        25 |          2 |   1205
+       3 |      1 |        22 |          5 |   3155
+       4 |      1 |        40 |          2 |    268
+       5 |      1 |        28 |          3 |   3199
+(5 rows)
+
+## Task 5
+SELECT
+    c.country,
+    t.category,
+    SUM(f.amount) AS totalsales
+FROM
+    "FactSales" f
+INNER JOIN
+    "DimCountry" c ON f.countryid = c.countryid
+INNER JOIN
+    "DimCategory" t ON f.categoryid = t.categoryid
+GROUP BY GROUPING SETS (
+    (c.country, t.category),
+    c.country,
+    t.category,
+    ()
+)
+ORDER BY
+    c.country,
+    t.category;
+    
+output:
+                      country                       |                      category                      | totalsales 
+----------------------------------------------------+----------------------------------------------------+------------
+ Argentina                                          | Books                                              |    4285010
+ Argentina                                          | Electronics                                        |    4338757
+ Argentina                                          | Software                                           |    4292153
+ Argentina                                          | Sports                                             |    4450354
+ Argentina                                          | Toys                                               |    4389307
+ Argentina                                          |                                                    |   21755581
+ Australia                                          | Books                                              |    4340188
+ Australia                                          | Electronics                                        |    4194740
+ Australia                                          | Software                                           |    4410360
+ Australia                                          | Sports                                             |    4201103
+:
+
+## Task 6
+SELECT 
+d.year,
+c.country, 
+sum(f.amount) as totalsales
+FROM "FactSales" f
+LEFT JOIN "DimDate" d ON f.dateid = d.dateid
+LEFT JOIN "DimCountry" c ON f.countryid = c.countryid
+GROUP BY ROLLUP(d.year,c.country)
+ORDER BY
+d.year, 
+c.country;
+
+output:
+year |                      country                       | totalsales 
+------+----------------------------------------------------+------------
+ 2019 | Argentina                                          |    7163167
+ 2019 | Australia                                          |    7259016
+ 2019 | Austria                                            |    7320233
+ 2019 | Azerbaijan                                         |    7097729
+ 2019 | Belgium                                            |    7093441
+ 2019 | Brazil                                             |    7116253
+ 2019 | Bulgaria                                           |    7312912
+ 2019 | Canada                                             |    7158271
+ 2019 | Cyprus                                             |    7250287
+ 2019 | Czech Republic                                     |    7087032
+ 2019 | Denmark                                            |    6955746
+ 2019 | Egypt                                              |    7169300
+ 2019 | Estonia                                            |    7193792
+ 2019 | Finland                                            |    7064381
+ 2019 | France                                             |    7077076
+ 2019 | Germany                                            |    7056510
+ 2019 | Greece                                             |    7208571
+ 2019 | Hungary                                            |    6922795
+ 2019 | India                                              |    7210119
+ 2019 | Indonesia                                          |    7316521
+ 2019 | Ireland                                            |    6886406
+ 2019 | Israel                                             |    7158364
+:
+
+
+## Task 7
+SELECT 
+d.year, 
+c.country, 
+AVG(f.amount) AS average_sales
+FROM "FactSales" f
+LEFT JOIN "DimDate" d ON f.dateid = d.dateid
+LEFT JOIN "DimCountry" c ON f.countryid = c.countryid
+GROUP BY CUBE(d.year, c.country);
+
+output:
+ year |                      country                       |     average_sales     
+------+----------------------------------------------------+-----------------------
+      |                                                    | 4003.3541933333333333
+ 2019 | Philippines                                        | 4009.1907158836689038
+ 2020 | Canada                                             | 3955.7396878483835006
+ 2021 | Australia                                          | 4091.2152466367713004
+ 2019 | Austria                                            | 4078.1242339832869081
+ 2019 | Switzerland                                        | 4039.6282194848824188
+ 2019 | Netherlands                                        | 3928.5738255033557047
+ 2019 | Argentina                                          | 4017.4800897363993270
+ 2021 | Sweden                                             | 3923.7823167319529938
+ 2021 | Turkey                                             | 4036.3847874720357942
+:
+
+## Task 8
+CREATE MATERIALIZED VIEW total_sales_per_country (country, totalsales) AS
+(SELECT c.country, sum(f.amount) from "FactSales" f
+LEFT JOIN "DimCountry" c ON f.countryid = c.countryid
+group by c.country);
+
+output:
+Test1=# SELECT * FROM total_sales_per_country LIMIT 15;
+                      country                       | totalsales 
+----------------------------------------------------+------------
+ Argentina                                          |   21755581
+ Australia                                          |   21522004
+ Austria                                            |   21365726
+ Azerbaijan                                         |   21325766
+ Belgium                                            |   21498249
+ Brazil                                             |   21350771
+ Bulgaria                                           |   21410716
+ Canada                                             |   21575438
+ Cyprus                                             |   21500526
+ Czech Republic                                     |   21334142
+ Denmark                                            |   21331097
+ Egypt                                              |   21379967
+ Estonia                                            |   21493054
+ Finland                                            |   21336188
+ France                                             |   21341055
+(15 rows)
+
+
