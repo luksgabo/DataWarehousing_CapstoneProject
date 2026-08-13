@@ -1,15 +1,24 @@
 # Assignment Overview
 
-In this assignment, you will complete three exercises with multiple tasks. Before starting the assignment, you will first verify the lab environment by starting the MySQL server and downloading the database file from the provided link.
+Module: OLTP Database (MySQL)
 
-In the first exercise, you will design the schema for an OLTP database. The schema will store fields such as Row ID, Product ID, Customer ID, Price, Quantity, and Timestamp of Sale.
+Overview
+This module focuses on designing and populating an OLTP transactional schema for sales data and automating basic maintenance tasks.
 
-In the second exercise, you will load the downloaded data into the OLTP database by importing the file. After importing, you will list the tables in the database and write a query to count the number of records in the table.
+Objectives
+- Design a transactional table to store sales (columns: rowid, product_id, customer_id, price, quantity, timestamp).
+- Load provided CSV data into MySQL and validate the import.
+- Create appropriate indexes (e.g., on `timestamp`) and verify index metadata.
+- Automate export/dump tasks with shell scripts.
 
-In the final exercise, you will automate administrative tasks by:
+Files
+- `oltpdata.csv` — raw transactional data sample
+- `sales_data.sql` — MySQL dump / create-table + data
+- `datadump.sh` — mysqldump helper
+- `sql_commands.txt` — example SQL commands used during the assignment
 
-- Creating an index on the timestamp field
+Deliverables
+- Created and populated `sales_data` table in a `sales` database.
+- Index on `timestamp` and verification query output.
+- A shell script to export/dump table data (`datadump.sh`).
 
-- Listing all indexes of the salesdata table
-
-- Writing a Bash script to export records from the table into another file

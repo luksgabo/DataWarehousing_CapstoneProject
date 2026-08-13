@@ -1,13 +1,20 @@
-# Assignment overview
+# Assignment Overview
 
-Scenario: You are a data engineer at an e-commerce company. Your company has finished setting up a data warehouse. Now you are assigned the responsibility to design a reporting dashboard that reflects the key metrics of the business.
+Module: Data Analytics / Reporting
 
-This assignment can be completed using either of the following two options:
+Overview
+This module covers preparing reporting datasets and building visual dashboards with sample e-commerce data.
 
-- IBM Cognos Analytics (or)
+Objectives
+- Load the provided `ecommerce.csv` into a table for analysis.
+- Validate and preview the dataset (e.g., list first 10 rows).
+- Create reporting data sources and visualizations using IBM Cognos Analytics.
+- Build example charts: quarterly bar chart, category-wise pie chart, and month-wise line chart.
 
-- Google Looker Studio
+Files
+- `ecommerce.csv` — sample transactions dataset for analytics and dashboards
 
-You will perform a couple of exercises with multiple tasks. But before proceeding with the assignment, ensure that you have access to IBM Cognos Analytics (or) Google Looker Studio. Once you have access to either of these, download the data from the provided link.
+Deliverables
+- A populated table or dataset with `ecommerce.csv` data.
+- Screenshots or exported images of created dashboard visualizations.
 
-The first exercise requires you to load data from the downloaded CSV file into a table and then list the first ten rows in the table. In the second exercise, you will create a data source in IBM Cognos Analytics (or) Google Looker Studio. In the final exercise, you will create a dashboard by performing tasks such as creating a bar chart of quarterly sales of mobile phones, a pie chart of category-wise sales of electronic goods, and a line chart of month-wise total sales for a given year. After completing each task, take a screenshot of the command you used and the output you obtained. Also, give a name to each screenshot.
